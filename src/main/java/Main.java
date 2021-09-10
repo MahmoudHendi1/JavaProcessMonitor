@@ -55,7 +55,7 @@ public class Main {
 
 
             Timer t=new Timer();
-            ProcessMonitor m= new ProcessMonitor(connector,t,writer);
+            ProcessMonitor m= new ProcessMonitor(connector,t,writer,args[0]);
             virtualMachine.detach();
             t.scheduleAtFixedRate(m, 0,1000);
         }catch (IOException ignored){
