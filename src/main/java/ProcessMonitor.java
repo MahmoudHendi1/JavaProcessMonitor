@@ -41,7 +41,7 @@ public class ProcessMonitor extends TimerTask {
         mbsc = _connector.getMBeanServerConnection();
         t=_t;
         csvPrinter = new CSVPrinter(writer, CSVFormat.EXCEL.withHeader("Date"
-                ,"ProcMem"
+                ,"RSS"
                 ,"TotalMemory"
                 ,"UsedHeap"
                 ,"Non-Heap"
@@ -56,7 +56,7 @@ public class ProcessMonitor extends TimerTask {
     long getProcessMemory() throws IOException, InterruptedException {
         String[] cmd = {"/bin/sh"
                 ,"-c"
-                ,"cat /proc/"+ pid + "/smaps | grep -i pss  | awk '{Total+=$2} END {print Total}' "};
+                ,"ps --no-header -o rss " + pid };
         Runtime run = Runtime.getRuntime();
         Process pr = run.exec(cmd);
         pr.waitFor();
@@ -68,7 +68,7 @@ public class ProcessMonitor extends TimerTask {
     public void run() {
         try {
             if(!header){
-                System.out.println("ProcMem"
+                System.out.println("RSS"
                         + "\t\tTotMemory"
                         + "    \t\tUsedHeap"
                         + "\t\tNonHeap"
@@ -79,6 +79,19 @@ public class ProcessMonitor extends TimerTask {
                         + "\t\tAvaProcessors");
                 header=true;
             }
+
+            /// Native Memory Tracking (don't uncomment it)
+
+            /**
+            Object  opParams[] = { new String[]{"summary"}
+            };
+            String[] signature = new String[]{"[Ljava.lang.String;"};
+            System.out.println(mbsc.invoke(new ObjectName("com.sun.management:type=DiagnosticCommand"),"vmNativeMemory",opParams, signature));
+            **/
+
+
+
+
             Date date = new Date();
 
 
